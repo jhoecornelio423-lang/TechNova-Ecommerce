@@ -1,0 +1,20 @@
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+
+  .card-img-top {
+    height: 250px;
+    object-fit: cover;
+  }
+}
+
+.list-group-item.active {
+    background-color: #212529;
+    border-color: #212529;
+}
