@@ -32,4 +32,14 @@ public class ProductService {
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
     }
+
+    public long countTotalProducts() {
+        return productRepository.count();
+    }
+
+    public long countLowStockProducts(int threshold) {
+        return productRepository.findAll().stream()
+                .filter(p -> p.getStock() != null && p.getStock() < threshold)
+                .count();
+    }
 }

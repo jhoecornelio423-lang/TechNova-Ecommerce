@@ -1,0 +1,93 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-dark text-white">
+    <h4 class="mb-0">{{ isEditMode ? 'Editar Prenda' : 'Añadir Nueva Prenda' }}</h4>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- Columna Izquierda -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Nombre de la Prenda</label>
+            <input type="text" class="form-control" formControlName="nombre" placeholder="Ej: Camiseta Tech">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" formControlName="descripcion" rows="3"></textarea>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label">Precio (S/)</label>
+              <div class="input-group">
+                <span class="input-group-text">S/</span>
+                <input type="number" class="form-control" formControlName="precio" step="0.01">
+              </div>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Stock</label>
+              <input type="number" class="form-control" formControlName="stock">
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha -->
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label">Imagen de la Prenda</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+            <small class="text-muted" *ngIf="!isEditMode">Selecciona una foto real de la prenda.</small>
+            <small class="text-muted" *ngIf="isEditMode">Selecciona una nueva foto solo si deseas cambiarla.</small>
+          </div>
+
+          <div class="mb-3" formGroupName="categoria">
+            <label class="form-label">Categoría</label>
+            <select class="form-select" formControlName="id">
+              <option [ngValue]="null" disabled>Seleccionar categoría...</option>
+              @for (cat of categories; track cat.id) {
+                <option [value]="cat.id">{{ cat.nombre }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label">Talla</label>
+              <select class="form-select" formControlName="talla">
+                <option value="">Seleccionar...</option>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+              </select>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Color</label>
+              <input type="text" class="form-control" formControlName="color" placeholder="Ej: Negro">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista Previa de Imagen -->
+      <div class="row mt-3" *ngIf="imagePreview">
+        <div class="col-12 text-center">
+          <p class="text-muted small">Vista previa:</p>
+          <img [src]="imagePreview" class="img-thumbnail shadow-sm" style="max-height: 200px; border-radius: 12px;">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-4 gap-2">
+        <button type="button" class="btn btn-secondary" routerLink="/admin/inventory">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid || (!isEditMode && !selectedFile) || loading">
+          @if (loading) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          {{ isEditMode ? 'Guardar Cambios' : 'Crear Producto' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

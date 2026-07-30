@@ -20,14 +20,17 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
-  roles: string[] = [];
 
-  constructor(private authService: AuthService, private storageService: StorageService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private storageService: StorageService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     if (this.storageService.isLoggedIn()) {
       this.isLoggedIn = true;
-      this.roles = this.storageService.getUser().roles;
+      this.redirectUser();
     }
   }
 
@@ -37,11 +40,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(username, password).subscribe({
       next: data => {
         this.storageService.saveUser(data);
-
         this.isLoginFailed = false;
         this.isLoggedIn = true;
-        this.roles = this.storageService.getUser().roles;
-        this.reloadPage();
+
+        // Redirección inmediata después de guardar los datos
+        this.redirectUser();
       },
       error: err => {
         this.errorMessage = err.error.message || 'Error al iniciar sesión';
@@ -50,7 +53,18 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  reloadPage(): void {
-    window.location.reload();
+  private redirectUser(): void {
+    const user = this.storageService.getUser();
+    if (user.roles && user.roles.includes('ROLE_ADMIN')) {
+      // Si es admin, forzar recarga y navegar al panel admin
+      this.router.navigate(['/admin']).then(() => {
+        window.location.reload();
+      });
+    } else {
+      // Si es usuario normal, volver al home
+      this.router.navigate(['/home']).then(() => {
+        window.location.reload();
+      });
+    }
   }
 }

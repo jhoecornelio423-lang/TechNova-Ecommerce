@@ -6,7 +6,6 @@
       class="profile-img-card"
     />
     <form
-      *ngIf="!isSuccessful"
       name="form"
       (ngSubmit)="f.form.valid && onSubmit()"
       #f="ngForm"
@@ -65,16 +64,15 @@
         />
       </div>
       <div class="form-group mt-3">
-        <button class="btn btn-primary btn-block w-100">Registrarse</button>
+        <button class="btn btn-primary btn-block w-100" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+          Registrarse
+        </button>
       </div>
 
-      <div class="alert alert-warning mt-2" *ngIf="f.submitted && isSignUpFailed">
+      <div class="alert alert-danger mt-2" *ngIf="f.submitted && isSignUpFailed">
         {{ errorMessage }}
       </div>
     </form>
-
-    <div class="alert alert-success" *ngIf="isSuccessful">
-      ¡Registro exitoso! Ya puedes iniciar sesión.
-    </div>
   </div>
 </div>

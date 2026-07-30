@@ -1,0 +1,212 @@
+.main-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  &.admin-layout {
+    flex-direction: row;
+  }
+}
+
+.content-container {
+  flex-grow: 1;
+  display: flex;
+}
+
+/* NAVBAR - SLATE STYLE */
+.navbar {
+  background-color: var(--primary-slate) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 15px 0;
+
+  .navbar-brand {
+    font-weight: 700;
+    color: white !important;
+    text-transform: uppercase;
+  }
+
+  .nav-link {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8) !important;
+    &:hover, &.active {
+      color: var(--accent-emerald) !important;
+    }
+  }
+}
+
+/* SIDEBAR - SOLID SLATE (SLIM VERSION) */
+.sidebar {
+  width: 210px; /* Reducido de 260px */
+  height: 100vh;
+  background-color: var(--primary-slate) !important;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: nowrap;
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  &.collapsed {
+    width: 60px; /* Reducido de 75px */
+
+    .sidebar-header {
+      justify-content: center;
+      padding: 0 !important;
+      i { margin: 0 !important; }
+    }
+
+    .nav-link {
+      justify-content: center;
+      margin: 4px 5px;
+      padding: 12px 0;
+      i { margin: 0 !important; }
+    }
+
+    .sidebar-footer {
+        padding: 15px 0 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .nav-link, .btn-logout-custom {
+            justify-content: center;
+            margin: 4px 0;
+            width: 40px;
+            padding: 12px 0;
+            i { margin: 0 !important; }
+        }
+    }
+  }
+
+  .sidebar-header {
+    height: 70px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-size: 0.9rem; /* Texto un poco más pequeño para el ancho delgado */
+  }
+
+  .sidebar-menu {
+      flex-grow: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+  }
+
+  .sidebar-footer {
+      flex-shrink: 0;
+      margin-top: auto;
+  }
+
+  .clickable-header {
+    cursor: pointer;
+    transition: background 0.2s ease;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .nav-link {
+    border-radius: 8px;
+    margin: 4px 10px;
+    padding: 10px 12px;
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white !important;
+    }
+
+    &.active {
+      background-color: var(--accent-emerald) !important;
+      color: white !important;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    i {
+        font-size: 1.15rem;
+        color: white;
+        opacity: 0.8;
+    }
+    &.active i { opacity: 1; }
+  }
+}
+
+/* TOGGLE BUTTON - SLATE THEME */
+.btn-toggle-subtle {
+  background: white;
+  border: 1px solid var(--border-sky);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-slate);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+  &:hover {
+    background-color: var(--bg-app);
+    color: var(--accent-emerald);
+  }
+}
+
+.btn-logout-custom {
+  background: none;
+  border: none;
+  color: #FDA4AF;
+  padding: 12px 15px;
+  margin: 0 10px;
+  text-align: left;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(251, 113, 133, 0.1);
+    color: white;
+  }
+}
+
+.main-content {
+  background-color: var(--bg-app);
+  min-height: 100vh;
+  transition: none;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.admin-main {
+    min-width: 0;
+}
+
+.navbar {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+  .navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent-emerald);
+  }
+}
+
+.nav-link {
+    cursor: pointer;
+}

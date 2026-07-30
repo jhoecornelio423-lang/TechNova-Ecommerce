@@ -1,0 +1,126 @@
+<!-- Header Area -->
+<header class="d-flex justify-content-between align-items-center mb-5">
+  <div class="welcome-text">
+    <h1 class="h2 fw-bold text-dark">¡Bienvenido, {{ adminName() }}!</h1>
+    <p class="text-muted mb-0">Gestiona el catálogo, controla el inventario y supervisa las ventas de TechNova.</p>
+  </div>
+
+  <div class="d-flex align-items-center bg-white p-2 rounded shadow-sm">
+      <div class="admin-badge me-3 d-flex align-items-center p-2 rounded-3 bg-light">
+          <div class="icon-circle me-2">
+              <i class="bi bi-person-circle"></i>
+          </div>
+          <div class="small">
+              <div class="fw-bold">{{ adminName() }}</div>
+              <div class="text-muted">{{ adminRole() }}</div>
+          </div>
+      </div>
+      <div class="current-date text-muted small border-start ps-3">
+          {{ currentDate | date:'fullDate':'':'es' }}
+      </div>
+  </div>
+</header>
+
+<!-- Summary Statistics Cards -->
+<div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-success border-4">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <p class="text-uppercase small fw-bold text-muted mb-1">Ventas Hoy</p>
+          <h3 class="fw-bold mb-0">S/ {{ stats()?.totalSalesToday || 0 | number:'1.0-2' }}</h3>
+        </div>
+        <div class="stat-icon text-success">
+          <i class="bi bi-graph-up-arrow"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-primary border-4">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <p class="text-uppercase small fw-bold text-muted mb-1">Inventario Bajo</p>
+          <h3 class="fw-bold mb-0">{{ stats()?.lowStockProducts || 0 }}</h3>
+          <span class="small text-muted">productos bajos</span>
+        </div>
+        <div class="stat-icon text-primary">
+          <i class="bi bi-box-seam"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-danger border-4">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <p class="text-uppercase small fw-bold text-muted mb-1">Prendas Activas</p>
+          <h3 class="fw-bold mb-0">{{ stats()?.totalProducts || 0 }}</h3>
+          <span class="small text-muted">✓ En catálogo</span>
+        </div>
+        <div class="stat-icon text-danger">
+          <i class="bi bi-tag"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-warning border-4">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <p class="text-uppercase small fw-bold text-muted mb-1">Utilidad Est.</p>
+          <h3 class="fw-bold mb-0">S/ {{ (stats()?.totalSalesToday || 0) * 0.35 | number:'1.0-2' }}</h3>
+          <span class="small text-success fw-bold">✓ 35% est.</span>
+        </div>
+        <div class="stat-icon text-warning">
+          <i class="bi bi-coin"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Large Action Cards -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm action-card p-4">
+      <div class="icon-box mb-3 text-primary">
+          <i class="bi bi-cart-check"></i>
+      </div>
+      <h4 class="fw-bold">Gestionar Inventario</h4>
+      <p class="text-muted small">Agrega, edita o elimina prendas, calzado y accesorios. Controla precios y existencias.</p>
+      <button class="btn btn-warning mt-auto fw-bold" routerLink="/admin/inventory">
+          IR AL INVENTARIO <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm action-card p-4">
+      <div class="icon-box mb-3 text-success">
+          <i class="bi bi-bar-chart-line"></i>
+      </div>
+      <h4 class="fw-bold">Reportes y Análisis</h4>
+      <p class="text-muted small">Visualiza métricas de ventas, productos más vendidos y tendencias de temporada.</p>
+      <button class="btn btn-warning mt-auto fw-bold" routerLink="/admin/reports">
+          VER REPORTES <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card h-100 border-0 shadow-sm action-card p-4">
+      <div class="icon-box mb-3 text-info">
+          <i class="bi bi-person-lines-fill"></i>
+      </div>
+      <h4 class="fw-bold">Gestión de Clientes</h4>
+      <p class="text-muted small">Administra la base de datos de usuarios, sus pedidos recientes y perfiles.</p>
+      <button class="btn btn-warning mt-auto fw-bold" routerLink="/admin/users">
+          GESTIONAR <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+</div>

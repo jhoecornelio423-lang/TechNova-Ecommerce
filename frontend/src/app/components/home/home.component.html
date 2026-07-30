@@ -1,3 +1,12 @@
+<!-- Mensaje de Bienvenida tras Registro -->
+@if (showWelcomeMessage()) {
+  <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <strong>¡Registro exitoso!</strong> Bienvenido a TechNova. Ya puedes iniciar sesión para comenzar tus compras.
+    <button type="button" class="btn-close" (click)="showWelcomeMessage.set(false)" aria-label="Close"></button>
+  </div>
+}
+
 <div class="row">
   <!-- Sidebar de Categorías -->
   <div class="col-md-3">
@@ -13,7 +22,7 @@
 
       @for (cat of categories; track cat.id) {
         <button
-          class="list-group-item list-gCamiseta Básica Blancaroup-item-action"
+          class="list-group-item list-group-item-action"
           [class.active]="selectedCategoryId === cat.id"
           (click)="filterByCategory(cat.id)"
         >
@@ -40,18 +49,30 @@
           @for (product of products; track product.id) {
             <div class="col">
               <div class="card h-100 product-card border-0 shadow-sm">
-                <img
-                  [src]="product.imagenUrl || 'https://via.placeholder.com/300x400?text=TechNova+Ropa'"
-                  class="card-img-top"
-                  [alt]="product.nombre"
-                >
+                <!-- Imagen y Título clicables para ver detalle -->
+                <a [routerLink]="['/product', product.id]" class="text-decoration-none">
+                  <img
+                    [src]="product.imagenUrl || 'https://via.placeholder.com/300x400?text=TechNova+Ropa'"
+                    class="card-img-top"
+                    [alt]="product.nombre"
+                  >
+                </a>
                 <div class="card-body">
-                  <h5 class="card-title text-dark">{{ product.nombre }}</h5>
-                  <p class="card-text text-muted small">{{ product.categoria.nombre }} • Talla: {{ product.talla }}</p>
-                  <p class="card-text text-primary fw-bold fs-4">{{ product.precio | currency }}</p>
+                  <a [routerLink]="['/product', product.id]" class="text-decoration-none">
+                    <h5 class="card-title text-dark">{{ product.nombre }}</h5>
+                  </a>
+                  <p class="card-text text-muted small">{{ product.categoria?.nombre }} • Talla: {{ product.talla }}</p>
+                  <p class="card-text text-primary fw-bold fs-4">S/ {{ product.precio | number:'1.0-0' }}</p>
                 </div>
                 <div class="card-footer bg-transparent border-0 pb-3">
-                   <button class="btn btn-primary w-100 py-2">Agregar al Carrito</button>
+                   <div class="d-grid gap-2">
+                     <button class="btn btn-outline-primary btn-sm" (click)="addToCart(product)">
+                       <i class="bi bi-cart-plus me-1"></i> Añadir al Carrito
+                     </button>
+                     <button class="btn btn-warning btn-sm fw-bold" (click)="buyNow(product)">
+                       COMPRAR AHORA
+                     </button>
+                   </div>
                 </div>
               </div>
             </div>

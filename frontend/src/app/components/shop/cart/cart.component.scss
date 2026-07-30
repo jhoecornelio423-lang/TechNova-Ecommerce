@@ -1,0 +1,51 @@
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(4px);
+    z-index: 1050;
+    animation: fadeIn 0.3s ease;
+}
+
+.cart-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 450px;
+    height: 100vh;
+    background: white;
+    z-index: 1060;
+    display: flex;
+    flex-direction: column;
+    animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.item-img {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    background: #f8f9fa;
+}
+
+.quantity-control {
+    background: #f8f9fa;
+    button {
+        border: none;
+        background: transparent;
+        &:hover { background: #e9ecef; }
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}

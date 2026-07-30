@@ -1,0 +1,68 @@
+<!-- Eliminado admin-page para usar el contenedor unificado -->
+<div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+  <h2 class="h4 mb-0 text-dark">Inventario de Productos</h2>
+  <button class="btn btn-warning fw-bold" routerLink="/admin/inventory/new">
+    <i class="bi bi-plus-lg me-1"></i> Nueva Prenda
+  </button>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Talla</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading) {
+            <tr>
+              <td colspan="7" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Consultando almacén...</p>
+              </td>
+            </tr>
+          } @else {
+            @for (product of products; track product.id) {
+              <tr>
+                <td>
+                  <img [src]="product.imagenUrl || 'https://via.placeholder.com/50'" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                </td>
+                <td>{{ product.nombre }}</td>
+                <td>{{ product.categoria?.nombre || 'Sin categoría' }}</td>
+                <td>{{ product.talla }}</td>
+                <td>S/ {{ product.precio | number:'1.0-2' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="(product.stock || 0) < 10 ? 'bg-danger' : 'bg-success'">
+                    {{ product.stock }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-primary me-2" [routerLink]="['/admin/inventory/edit', product.id]" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteProduct(product.id)" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="text-center py-4 text-muted">
+                  No se encontraron productos en la base de datos.
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

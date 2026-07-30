@@ -1,1 +1,63 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* TECHNOVA SLATE & SKY PALETTE */
+:root {
+  --primary-slate: #334155;  /* Sidebar Graphite */
+  --accent-emerald: #10B981; /* Fresh Emerald Green */
+  --bg-app: #E0F2FE;         /* Soft Celeste Content */
+  --bg-white: #FFFFFF;
+  --text-dark: #1E293B;
+  --border-sky: #BAE6FD;
+
+  color-scheme: light;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-dark);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* MODERN BUTTONS REFRESH */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: all 0.2s ease;
+
+  &.btn-primary {
+    background-color: var(--primary-slate);
+    border: none;
+    &:hover {
+      background-color: #1E293B;
+      transform: translateY(-1px);
+    }
+  }
+
+  &.btn-warning {
+    background-color: #F59E0B;
+    border: none;
+    color: white;
+    &:hover {
+      background-color: #D97706;
+    }
+  }
+
+  &.btn-emerald {
+    background-color: var(--accent-emerald);
+    color: white;
+    &:hover {
+      background-color: #059669;
+    }
+  }
+}
+
+.card {
+  border: 1px solid var(--border-sky);
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}

@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+  <h2 class="h4 mb-0 text-dark">Gestión de Categorías</h2>
+  <button class="btn btn-emerald fw-bold" routerLink="/admin/categories/new">
+    <i class="bi bi-plus-lg me-1"></i> Nueva Categoría
+  </button>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading) {
+            <tr>
+              <td colspan="3" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Cargando categorías...</p>
+              </td>
+            </tr>
+          } @else {
+            @for (cat of categories; track cat.id) {
+              <tr>
+                <td class="fw-bold">{{ cat.nombre }}</td>
+                <td class="text-muted">{{ cat.descripcion }}</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-primary me-2" [routerLink]="['/admin/categories/edit', cat.id]" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteCategory(cat.id)" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="text-center py-4 text-muted">
+                  No hay categorías registradas.
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

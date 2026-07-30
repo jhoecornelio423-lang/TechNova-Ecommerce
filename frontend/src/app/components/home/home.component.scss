@@ -1,20 +1,55 @@
 .product-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: none;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
+  background: white;
+  border-radius: 12px;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: var(--primary-blue);
   }
 
   .card-img-top {
-    height: 250px;
+    height: 300px;
     object-fit: cover;
+    border-bottom: 1px solid var(--border-light);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .card-title {
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .btn-primary {
+      background-color: var(--primary-blue);
   }
 }
 
-.list-group-item.active {
-    background-color: #212529;
-    border-color: #212529;
+.list-group {
+    background: white;
+    border-radius: 10px;
+    padding: 8px;
+    border: 1px solid var(--border-light);
+
+    .list-group-item {
+        border: none;
+        border-radius: 8px;
+        margin-bottom: 2px;
+        padding: 12px 15px;
+        font-weight: 600;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+
+        &.active {
+            background-color: #EFF6FF !important;
+            color: var(--primary-blue) !important;
+        }
+
+        &:not(.active):hover {
+            background-color: var(--bg-app);
+            color: var(--primary-blue);
+        }
+    }
 }

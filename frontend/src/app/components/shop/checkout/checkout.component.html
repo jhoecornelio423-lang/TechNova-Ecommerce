@@ -1,0 +1,62 @@
+<div class="checkout-container py-5">
+  <div class="row">
+    <!-- Formulario de Envío -->
+    <div class="col-md-7">
+      <div class="card shadow-sm border-0 p-4">
+        <h4 class="fw-bold mb-4">Información de Envío</h4>
+        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Dirección de Entrega</label>
+            <textarea
+              class="form-control"
+              formControlName="direccionEnvio"
+              rows="3"
+              placeholder="Ej: Calle Las Flores 123, Miraflores, Lima">
+            </textarea>
+            @if (checkoutForm.get('direccionEnvio')?.touched && checkoutForm.get('direccionEnvio')?.invalid) {
+              <small class="text-danger">La dirección es obligatoria (mínimo 10 caracteres).</small>
+            }
+          </div>
+
+          <div class="alert alert-info border-0 shadow-sm mt-4">
+            <i class="bi bi-info-circle me-2"></i>
+            Por ahora solo aceptamos Pago Contra Entrega. Pagas cuando recibes tu pedido.
+          </div>
+
+          <button class="btn btn-primary w-100 py-3 fw-bold mt-4" [disabled]="checkoutForm.invalid || loading">
+            @if (loading) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+            }
+            CONFIRMAR PEDIDO
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Resumen del Pedido -->
+    <div class="col-md-5">
+      <div class="card shadow-sm border-0 p-4 bg-light">
+        <h5 class="fw-bold mb-4">Resumen de tu compra</h5>
+
+        <div class="order-items mb-4">
+          @for (item of cartService.items(); track item.product.id) {
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <span class="fw-bold">{{ item.quantity }}x</span> {{ item.product.nombre }}
+                <div class="small text-muted">Talla: {{ item.product.talla }}</div>
+              </div>
+              <span class="fw-bold text-dark">S/ {{ (item.product.precio * item.quantity) | number:'1.0-2' }}</span>
+            </div>
+          }
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <span class="h5 mb-0">Total a pagar:</span>
+          <span class="h3 mb-0 text-primary fw-bold">S/ {{ cartService.totalPrice() | number:'1.0-2' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

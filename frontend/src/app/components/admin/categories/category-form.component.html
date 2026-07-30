@@ -1,0 +1,28 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-dark text-white p-3">
+    <h4 class="mb-0">{{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}</h4>
+  </div>
+  <div class="card-body p-4">
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label fw-bold">Nombre de la Categoría</label>
+        <input type="text" class="form-control" formControlName="nombre" placeholder="Ej: Ropa Deportiva">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Descripción</label>
+        <textarea class="form-control" formControlName="descripcion" rows="4" placeholder="Breve descripción del tipo de ropa..."></textarea>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-light" routerLink="/admin/categories">Cancelar</button>
+        <button type="submit" class="btn btn-emerald" [disabled]="categoryForm.invalid || loading">
+          @if (loading) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          {{ isEditMode ? 'Guardar Cambios' : 'Crear Categoría' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
