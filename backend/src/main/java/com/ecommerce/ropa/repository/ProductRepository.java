@@ -14,6 +14,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     
     List<Product> findTop5ByOrderByStockAsc();
 
+    List<Product> findByNombreContainingIgnoreCase(String nombre);
+
     @Query("SELECT p.categoria.nombre as category, COUNT(p) as count FROM Product p GROUP BY p.categoria.nombre")
     List<Object[]> countProductsByCategory();
 }

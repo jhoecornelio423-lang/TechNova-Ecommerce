@@ -53,4 +53,29 @@ public class OrderController {
     public List<Order> getAllOrders() {
         return orderService.getAllOrders();
     }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Order> updateStatus(@PathVariable Integer id, @RequestBody String status) {
+        // Limpiar comillas si vienen del JSON
+        String cleanStatus = status.replace("\"", "");
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, cleanStatus));
+    }
+
+    @GetMapping("/my-orders")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Order>> getMyOrders() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        return ResponseEntity.ok(orderService.getOrdersByUser(user));
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../services/product.service';
@@ -15,6 +15,7 @@ import { ToastService } from '../../../services/toast.service';
 })
 export class ProductDetailComponent implements OnInit {
   product = signal<Product | null>(null);
+  relatedProducts = signal<Product[]>([]);
   loading = signal(true);
   quantity = signal(1);
 
@@ -23,14 +24,18 @@ export class ProductDetailComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
-    if (id) {
-      this.loadProduct(id);
-    }
+    // Escuchar cambios en los parámetros de la URL para recargar cuando cambie el ID
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.loadProduct(Number(id));
+      }
+    });
   }
 
   loadProduct(id: number): void {
@@ -38,12 +43,20 @@ export class ProductDetailComponent implements OnInit {
     this.productService.getProductById(id).subscribe({
       next: (data) => {
         this.product.set(data);
+        this.loadRelated(id);
         this.loading.set(false);
       },
       error: (err) => {
         console.error('Error cargando detalle:', err);
         this.loading.set(false);
       }
+    });
+  }
+
+  loadRelated(id: number): void {
+    this.productService.getRelatedProducts(id).subscribe({
+      next: (data) => this.relatedProducts.set(data),
+      error: (err) => console.error('Error cargando relacionados:', err)
     });
   }
 
@@ -54,13 +67,11 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  addToCart(): void {
-    const p = this.product();
+  addToCart(product?: Product): void {
+    const p = product || this.product();
     if (p) {
-      for(let i = 0; i < this.quantity(); i++) {
-        this.cartService.addToCart(p);
-      }
-      this.toastService.show(`${this.quantity()}x ${p.nombre} añadido al carrito`, 'success');
+      this.cartService.addToCart(p);
+      this.toastService.show(`"${p.nombre}" añadido al carrito`, 'success');
     }
   }
 

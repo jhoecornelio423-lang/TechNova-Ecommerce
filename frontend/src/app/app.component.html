@@ -49,6 +49,9 @@
             </a>
           </li>
           <li class="nav-item" *ngIf="isLoggedIn">
+            <a class="nav-link" routerLink="/my-orders"><i class="bi bi-list-check"></i> Mis Pedidos</a>
+          </li>
+          <li class="nav-item" *ngIf="isLoggedIn">
             <a class="nav-link" routerLink="/profile"><i class="bi bi-person-circle"></i> {{ displayName }}</a>
           </li>
           <li class="nav-item" *ngIf="isLoggedIn">
@@ -98,6 +101,13 @@
                class="nav-link text-white d-flex align-items-center" [title]="isSidebarCollapsed ? 'Reportes' : ''">
               <i class="bi bi-bar-chart-line fs-4" [class.me-3]="!isSidebarCollapsed"></i>
               <span class="menu-text" *ngIf="!isSidebarCollapsed">Reportes</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/admin/orders" routerLinkActive="active"
+               class="nav-link text-white d-flex align-items-center" [title]="isSidebarCollapsed ? 'Pedidos' : ''">
+              <i class="bi bi-truck fs-4" [class.me-3]="!isSidebarCollapsed"></i>
+              <span class="menu-text" *ngIf="!isSidebarCollapsed">Pedidos</span>
             </a>
           </li>
         </ul>

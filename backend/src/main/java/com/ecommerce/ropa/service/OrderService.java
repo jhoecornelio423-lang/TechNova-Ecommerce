@@ -3,6 +3,7 @@ package com.ecommerce.ropa.service;
 import com.ecommerce.ropa.model.Order;
 import com.ecommerce.ropa.model.OrderItem;
 import com.ecommerce.ropa.model.Product;
+import com.ecommerce.ropa.model.User;
 import com.ecommerce.ropa.repository.OrderRepository;
 import com.ecommerce.ropa.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +30,13 @@ public class OrderService {
             Product product = productRepository.findById(item.getProduct().getId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + item.getProduct().getId()));
 
-            // Verificar Stock
             if (product.getStock() < item.getCantidad()) {
                 throw new RuntimeException("Stock insuficiente para: " + product.getNombre());
             }
 
-            // Actualizar Stock
             product.setStock(product.getStock() - item.getCantidad());
             productRepository.save(product);
 
-            // Fijar precio del momento de compra
             item.setUnitPrice(product.getPrecio());
             item.setOrder(order);
 
@@ -50,7 +48,19 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    public List<Order> getOrdersByUser(User user) {
+        return orderRepository.findByUserOrderByOrderDateDesc(user);
+    }
+
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    @Transactional
+    public Order updateOrderStatus(Integer orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        order.setEstado(status);
+        return orderRepository.save(order);
     }
 }

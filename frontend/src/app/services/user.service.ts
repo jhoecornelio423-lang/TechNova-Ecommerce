@@ -33,4 +33,12 @@ export class UserService {
   getAvailableRoles(): Observable<any[]> {
     return this.http.get<any[]>('/api/roles');
   }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${API_URL}/me`);
+  }
+
+  updateProfile(data: any): Observable<User> {
+    return this.http.put<User>(`${API_URL}/me`, data);
+  }
 }

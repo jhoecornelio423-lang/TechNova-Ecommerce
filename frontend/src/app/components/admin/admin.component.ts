@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { ConfirmService } from '../../services/confirm.service';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })

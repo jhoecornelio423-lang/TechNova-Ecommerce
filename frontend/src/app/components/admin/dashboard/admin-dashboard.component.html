@@ -37,20 +37,21 @@
     </div>
   </div>
 
-  <div class="col">
-    <div class="card h-100 border-0 shadow-sm stat-card border-start border-primary border-4">
-      <div class="card-body d-flex justify-content-between align-items-center">
-        <div>
-          <p class="text-uppercase small fw-bold text-muted mb-1">Inventario Bajo</p>
-          <h3 class="fw-bold mb-0">{{ stats()?.lowStockProducts || 0 }}</h3>
-          <span class="small text-muted">productos bajos</span>
-        </div>
-        <div class="stat-icon text-primary">
-          <i class="bi bi-box-seam"></i>
+    <!-- Inventario -->
+    <div class="col" style="cursor: pointer;" routerLink="/admin/orders">
+      <div class="card h-100 border-0 shadow-sm stat-card border-start border-primary border-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <p class="text-uppercase small fw-bold text-muted mb-1">Pedidos Pendientes</p>
+            <h3 class="fw-bold mb-0">{{ stats()?.pendingOrders || 0 }}</h3>
+            <span class="small text-muted">por atender</span>
+          </div>
+          <div class="stat-icon text-primary">
+            <i class="bi bi-clock-history"></i>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
   <div class="col">
     <div class="card h-100 border-0 shadow-sm stat-card border-start border-danger border-4">

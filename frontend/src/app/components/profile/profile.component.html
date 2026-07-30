@@ -1,0 +1,81 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+        <!-- Header con Avatar -->
+        <div class="profile-header p-5 text-center text-white">
+          <div class="avatar-large mx-auto mb-3 shadow">
+            {{ getInitials() }}
+          </div>
+          <h2 class="fw-bold mb-1">@{{ user()?.username }}</h2>
+          <span class="badge bg-white text-primary rounded-pill px-3">{{ getRoles() }}</span>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          @if (loading()) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-muted">Cargando tu información...</p>
+            </div>
+          } @else {
+            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+              <div class="row g-4">
+                <div class="col-md-12">
+                  <h5 class="fw-bold text-dark border-bottom pb-2 mb-4">Datos Personales</h5>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-bold small text-uppercase">Nombre Completo</label>
+                  <input type="text" class="form-control form-control-lg bg-light" formControlName="fullName" placeholder="Tu nombre real">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-bold small text-uppercase">Correo Electrónico</label>
+                  <input type="email" class="form-control form-control-lg bg-light" formControlName="email" placeholder="email@ejemplo.com">
+                </div>
+
+                <div class="col-12 mt-5">
+                  <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3">
+                    <div class="small text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Tus datos se usan para la facturación de tus pedidos.
+                    </div>
+                    <button type="submit" class="btn btn-primary px-5 fw-bold" [disabled]="profileForm.invalid || saving()">
+                      @if (saving()) {
+                        <span class="spinner-border spinner-border-sm me-2"></span> Guardando...
+                      } @else {
+                        GUARDAR CAMBIOS
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="mt-5 pt-4 border-top">
+                <h5 class="fw-bold text-dark mb-3">Seguridad y Cuenta</h5>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold">Contraseña</div>
+                            <div class="small text-muted">Cambia tu clave de acceso periódicamente.</div>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm disabled">Cambiar Clave</button>
+                    </div>
+                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <div class="fw-bold text-danger">Zona de Peligro</div>
+                            <div class="small text-muted">Eliminar tu cuenta de TechNova de forma permanente.</div>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm disabled">Cerrar Cuenta</button>
+                    </div>
+                </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

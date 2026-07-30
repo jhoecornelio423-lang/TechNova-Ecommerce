@@ -21,6 +21,10 @@ public class ProductService {
         return productRepository.findByCategoriaId(categoryId);
     }
 
+    public List<Product> searchProducts(String name) {
+        return productRepository.findByNombreContainingIgnoreCase(name);
+    }
+
     public Optional<Product> getProductById(Integer id) {
         return productRepository.findById(id);
     }

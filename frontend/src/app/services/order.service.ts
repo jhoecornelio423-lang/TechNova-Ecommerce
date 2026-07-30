@@ -17,4 +17,13 @@ export class OrderService {
   getMyOrders(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/my-orders`);
   }
+
+  getAllOrders(): Observable<any[]> {
+    return this.http.get<any[]>(this.API_URL);
+  }
+
+  updateOrderStatus(id: number, status: string): Observable<any> {
+    // Usando concatenación clásica para evitar confusiones con template literals en el IDE
+    return this.http.put(this.API_URL + '/' + id + '/status', status);
+  }
 }

@@ -46,6 +46,22 @@ public class ProductController {
         return productService.getProductsByCategory(categoryId);
     }
 
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam("name") String name) {
+        return productService.searchProducts(name);
+    }
+
+    @GetMapping("/{id}/related")
+    public List<Product> getRelatedProducts(@PathVariable Integer id) {
+        return productService.getProductById(id)
+                .map(product -> productService.getProductsByCategory(product.getCategoria().getId())
+                        .stream()
+                        .filter(p -> !p.getId().equals(id))
+                        .limit(4)
+                        .collect(java.util.stream.Collectors.toList()))
+                .orElse(java.util.Collections.emptyList());
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> createProduct(

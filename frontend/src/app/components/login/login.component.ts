@@ -43,12 +43,20 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
 
-        // Redirección inmediata después de guardar los datos
         this.redirectUser();
       },
       error: err => {
-        this.errorMessage = err.error.message || 'Error al iniciar sesión';
+        // Corrección: Manejo seguro de errores para evitar el crash "reading 'message' of null"
+        if (err.status === 401) {
+          this.errorMessage = 'Usuario o contraseña incorrectos';
+        } else if (err.status === 500) {
+          this.errorMessage = 'Error en el servidor. Por favor, revisa que la base de datos esté encendida.';
+        } else {
+          this.errorMessage = err.error?.message || 'Ocurrió un error inesperado al iniciar sesión';
+        }
+
         this.isLoginFailed = true;
+        console.error('Error de Login:', err);
       }
     });
   }
@@ -56,12 +64,10 @@ export class LoginComponent implements OnInit {
   private redirectUser(): void {
     const user = this.storageService.getUser();
     if (user.roles && user.roles.includes('ROLE_ADMIN')) {
-      // Si es admin, forzar recarga y navegar al panel admin
       this.router.navigate(['/admin']).then(() => {
         window.location.reload();
       });
     } else {
-      // Si es usuario normal, volver al home
       this.router.navigate(['/home']).then(() => {
         window.location.reload();
       });

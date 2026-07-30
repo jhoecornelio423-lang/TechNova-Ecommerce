@@ -27,6 +27,14 @@ export class ProductService {
     return this.http.get<Product[]>(API_URL + 'products/category/' + categoryId);
   }
 
+  searchProducts(name: string): Observable<Product[]> {
+    return this.http.get<Product[]>(API_URL + 'products/search', { params: { name } });
+  }
+
+  getRelatedProducts(id: number): Observable<Product[]> {
+    return this.http.get<Product[]>(API_URL + 'products/' + id + '/related');
+  }
+
   createProduct(product: any, image: File): Observable<Product> {
     const formData = new FormData();
     formData.append('nombre', product.nombre);

@@ -8,7 +8,10 @@ export const httpInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   const user = storageService.getUser();
   const token = user.token;
 
-  if (token) {
+  // NO añadir el token si la petición es para el login o registro
+  const isAuthRequest = req.url.includes('/api/auth/');
+
+  if (token && !isAuthRequest) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`

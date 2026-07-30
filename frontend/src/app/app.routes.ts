@@ -9,8 +9,11 @@ import { CategoryListComponent } from './components/admin/categories/category-li
 import { CategoryFormComponent } from './components/admin/categories/category-form.component';
 import { UserListComponent } from './components/admin/users/user-list.component';
 import { ReportComponent } from './components/admin/reports/report.component';
+import { AdminOrdersComponent } from './components/admin/orders/admin-orders.component';
 import { CheckoutComponent } from './components/shop/checkout/checkout.component';
 import { ProductDetailComponent } from './components/shop/product-detail/product-detail.component';
+import { MyOrdersComponent } from './components/shop/my-orders/my-orders.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { adminGuard } from './helpers/admin.guard';
 
 export const routes: Routes = [
@@ -19,6 +22,8 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'checkout', component: CheckoutComponent },
   { path: 'product/:id', component: ProductDetailComponent },
+  { path: 'my-orders', component: MyOrdersComponent },
+  { path: 'profile', component: ProfileComponent },
   {
     path: 'admin',
     component: AdminDashboardComponent,
@@ -62,6 +67,11 @@ export const routes: Routes = [
   {
     path: 'admin/reports',
     component: ReportComponent,
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'admin/orders',
+    component: AdminOrdersComponent,
     canActivate: [adminGuard]
   },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
