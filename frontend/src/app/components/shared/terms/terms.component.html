@@ -1,0 +1,38 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal-card animate-slide-up" (click)="$event.stopPropagation()">
+    <div class="modal-header border-bottom p-4 d-flex justify-content-between align-items-center bg-light">
+      <h4 class="mb-0 fw-bold text-dark">Términos y Condiciones TechNova</h4>
+      <button class="btn-close" (click)="onClose()"></button>
+    </div>
+
+    <div class="modal-body p-4 p-md-5 overflow-auto" style="max-height: 70vh;">
+      <section class="mb-4">
+        <h5 class="fw-bold"><i class="bi bi-truck me-2 text-primary"></i> 1. Envíos y Entregas</h5>
+        <p class="text-muted">Realizamos envíos a todo el territorio nacional (Perú). El tiempo estimado de entrega es de 2 a 5 días hábiles dependiendo de la provincia. Las entregas se realizan de lunes a sábado en horario de 9:00 AM a 6:00 PM.</p>
+      </section>
+
+      <section class="mb-4">
+        <h5 class="fw-bold"><i class="bi bi-cash-stack me-2 text-primary"></i> 2. Métodos de Pago</h5>
+        <p class="text-muted">Actualmente operamos bajo la modalidad de <strong>Pago Contra Entrega</strong>. El cliente deberá abonar el monto total del pedido en efectivo o mediante billeteras digitales (Yape/Plin) al momento de recibir sus prendas.</p>
+      </section>
+
+      <section class="mb-4">
+        <h5 class="fw-bold"><i class="bi bi-arrow-left-right me-2 text-primary"></i> 3. Cambios y Devoluciones</h5>
+        <p class="text-muted">Por motivos de higiene y seguridad, <strong>no se aceptan cambios ni devoluciones</strong> una vez que el pedido ha sido entregado y verificado. Recomendamos revisar bien las tallas y especificaciones en la página de detalle de cada producto antes de confirmar la compra.</p>
+      </section>
+
+      <section class="mb-4">
+        <h5 class="fw-bold"><i class="bi bi-shield-lock me-2 text-primary"></i> 4. Privacidad de Datos</h5>
+        <p class="text-muted">TechNova se compromete a proteger tu información personal. Tus datos de DNI, correo y dirección son utilizados exclusivamente para la logística de envío y facturación de tus compras.</p>
+      </section>
+
+      <div class="alert alert-warning border-0 shadow-sm mt-4 small">
+          Al confirmar tu pedido, declaras conocer y aceptar estos términos en su totalidad.
+      </div>
+    </div>
+
+    <div class="modal-footer p-4 bg-light border-top text-center">
+      <button class="btn btn-primary px-5 fw-bold" (click)="onClose()">ENTENDIDO</button>
+    </div>
+  </div>
+</div>

@@ -22,13 +22,13 @@
 </header>
 
 <!-- Summary Statistics Cards -->
-<div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+<div class="row row-cols-1 row-cols-md-5 g-4 mb-5">
   <div class="col">
     <div class="card h-100 border-0 shadow-sm stat-card border-start border-success border-4">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
           <p class="text-uppercase small fw-bold text-muted mb-1">Ventas Hoy</p>
-          <h3 class="fw-bold mb-0">S/ {{ stats()?.totalSalesToday || 0 | number:'1.0-2' }}</h3>
+          <h3 class="fw-bold mb-0">S/ {{ stats()?.totalSalesToday || 0 | number:'1.0-0' }}</h3>
         </div>
         <div class="stat-icon text-success">
           <i class="bi bi-graph-up-arrow"></i>
@@ -37,43 +37,72 @@
     </div>
   </div>
 
-    <!-- Inventario -->
-    <div class="col" style="cursor: pointer;" routerLink="/admin/orders">
-      <div class="card h-100 border-0 shadow-sm stat-card border-start border-primary border-4">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <div>
-            <p class="text-uppercase small fw-bold text-muted mb-1">Pedidos Pendientes</p>
-            <h3 class="fw-bold mb-0">{{ stats()?.pendingOrders || 0 }}</h3>
-            <span class="small text-muted">por atender</span>
-          </div>
-          <div class="stat-icon text-primary">
-            <i class="bi bi-clock-history"></i>
-          </div>
+  <!-- Pedidos Pendientes -->
+  <div class="col" style="cursor: pointer;" routerLink="/admin/orders">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-primary border-4">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <p class="text-uppercase small fw-bold text-muted mb-1">Pedidos Pendientes</p>
+          <h3 class="fw-bold mb-0">{{ stats()?.pendingOrders || 0 }}</h3>
+          <span class="small text-muted">por atender</span>
+        </div>
+        <div class="stat-icon text-primary">
+          <i class="bi bi-clock-history"></i>
         </div>
       </div>
     </div>
+  </div>
 
+  <!-- Stock Bajo (Dinámico: Rojo si hay peligro, Verde si todo está bien) -->
+  <div class="col" style="cursor: pointer;" routerLink="/admin/inventory">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-4"
+         [class.border-danger]="(stats()?.lowStockProducts || 0) > 0"
+         [class.border-success]="(stats()?.lowStockProducts || 0) === 0"
+         [class.pulse-danger]="(stats()?.lowStockProducts || 0) > 0">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <p class="text-uppercase small fw-bold text-muted mb-1">Stock Bajo</p>
+          <h3 class="fw-bold mb-0"
+              [class.text-danger]="(stats()?.lowStockProducts || 0) > 0"
+              [class.text-success]="(stats()?.lowStockProducts || 0) === 0">
+            {{ stats()?.lowStockProducts || 0 }}
+          </h3>
+          <span class="small text-muted">prendas críticas</span>
+        </div>
+        <div class="stat-icon"
+             [class.text-danger]="(stats()?.lowStockProducts || 0) > 0"
+             [class.text-success]="(stats()?.lowStockProducts || 0) === 0">
+          <i class="bi"
+             [class.bi-exclamation-octagon-fill]="(stats()?.lowStockProducts || 0) > 0"
+             [class.bi-check-circle-fill]="(stats()?.lowStockProducts || 0) === 0"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prendas Activas -->
   <div class="col">
-    <div class="card h-100 border-0 shadow-sm stat-card border-start border-danger border-4">
+    <div class="card h-100 border-0 shadow-sm stat-card border-start border-info border-4">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
           <p class="text-uppercase small fw-bold text-muted mb-1">Prendas Activas</p>
           <h3 class="fw-bold mb-0">{{ stats()?.totalProducts || 0 }}</h3>
           <span class="small text-muted">✓ En catálogo</span>
         </div>
-        <div class="stat-icon text-danger">
+        <div class="stat-icon text-info">
           <i class="bi bi-tag"></i>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Utilidad (AHORA NARANJA) -->
   <div class="col">
     <div class="card h-100 border-0 shadow-sm stat-card border-start border-warning border-4">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
           <p class="text-uppercase small fw-bold text-muted mb-1">Utilidad Est.</p>
-          <h3 class="fw-bold mb-0">S/ {{ (stats()?.totalSalesToday || 0) * 0.35 | number:'1.0-2' }}</h3>
+          <h3 class="fw-bold mb-0">S/ {{ (stats()?.totalSalesToday || 0) * 0.35 | number:'1.0-0' }}</h3>
           <span class="small text-success fw-bold">✓ 35% est.</span>
         </div>
         <div class="stat-icon text-warning">

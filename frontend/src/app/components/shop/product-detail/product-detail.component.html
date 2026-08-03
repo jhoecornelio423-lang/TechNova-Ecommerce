@@ -6,10 +6,13 @@
     </div>
   } @else if (product()) {
     <div class="row g-5">
-      <!-- Imagen del Producto -->
+
+      <!-- Imagen del Producto (Sticky) -->
       <div class="col-md-6">
-        <div class="card border-0 shadow-sm overflow-hidden rounded-4">
-          <img [src]="product()?.imagenUrl" class="img-fluid main-img" [alt]="product()?.nombre">
+        <div class="image-sticky-wrapper">
+            <div class="main-img-container shadow-sm">
+                <img [src]="product()?.imagenUrl" class="img-fluid main-img" [alt]="product()?.nombre">
+            </div>
         </div>
       </div>
 
@@ -28,7 +31,22 @@
             <span class="text-muted">Color: {{ product()?.color }}</span>
         </div>
 
-        <h2 class="text-primary fw-bold mb-4">S/ {{ product()?.precio | number:'1.0-0' }}</h2>
+        <!-- Bloque de Precios Pro (Color Dinámico) -->
+        <div class="price-block-detail mb-4">
+            <div class="d-flex align-items-center gap-3 mb-1">
+                <h2 class="fw-bold mb-0"
+                    [class.text-danger]="product()?.precioAnterior && product()?.precioAnterior! > product()?.precio!"
+                    [class.text-dark]="!product()?.precioAnterior || product()?.precioAnterior! <= product()?.precio!">
+                    S/ {{ product()?.precio | number:'1.0-0' }}
+                </h2>
+                @if (product()?.precioAnterior && product()?.precioAnterior! > product()?.precio!) {
+                    <span class="badge bg-danger rounded-1">-{{ ((product()?.precioAnterior! - product()?.precio!) / product()?.precioAnterior! * 100) | number:'1.0-0' }}%</span>
+                }
+            </div>
+            @if (product()?.precioAnterior && product()?.precioAnterior! > product()?.precio!) {
+                <div class="text-muted text-decoration-line-through">Antes: S/ {{ product()?.precioAnterior | number:'1.0-0' }}</div>
+            }
+        </div>
 
         <div class="description mb-4">
           <h5 class="fw-bold text-dark">Descripción</h5>
@@ -79,24 +97,35 @@
       </div>
     </div>
 
-    <!-- PRODUCTOS RELACIONADOS (FASE 17) -->
+    <!-- PRODUCTOS RELACIONADOS -->
     @if (relatedProducts().length > 0) {
       <div class="mt-5 pt-5">
         <h3 class="fw-bold text-dark mb-4">También te podría gustar</h3>
         <div class="row row-cols-1 row-cols-md-4 g-4">
           @for (rel of relatedProducts(); track rel.id) {
             <div class="col">
-              <div class="card h-100 product-card border-0 shadow-sm rounded-4 overflow-hidden">
+              <div class="retail-item bg-white shadow-sm rounded-4 position-relative h-100 d-flex flex-column">
                 <a [routerLink]="['/product', rel.id]" class="text-decoration-none">
-                  <img [src]="rel.imagenUrl" class="card-img-top" style="height: 200px; object-fit: cover;" [alt]="rel.nombre">
+                    <div class="retail-img-container overflow-hidden rounded-top-4 bg-light p-3" style="aspect-ratio: 1/1;">
+                        <img [src]="rel.imagenUrl" class="img-fluid w-100 h-100" style="object-fit: contain;" [alt]="rel.nombre">
+                    </div>
                 </a>
                 <div class="card-body p-3">
                   <a [routerLink]="['/product', rel.id]" class="text-decoration-none">
-                    <h6 class="card-title text-dark fw-bold mb-1">{{ rel.nombre }}</h6>
+                    <h6 class="card-title text-dark fw-bold mb-2 text-truncate" style="font-size: 0.85rem;">{{ rel.nombre }}</h6>
                   </a>
-                  <p class="text-primary fw-bold mb-0">S/ {{ rel.precio | number:'1.0-0' }}</p>
-                  <button class="btn btn-link p-0 text-muted small text-decoration-none mt-2" (click)="addToCart(rel)">
-                      + Añadir al carrito
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="fw-bold"
+                          [class.text-danger]="rel.precioAnterior && rel.precioAnterior > rel.precio"
+                          [class.text-dark]="!rel.precioAnterior || rel.precioAnterior <= rel.precio">
+                        S/ {{ rel.precio | number:'1.0-0' }}
+                    </span>
+                    @if (rel.precioAnterior && rel.precioAnterior > rel.precio) {
+                        <span class="text-muted smallest text-decoration-line-through" style="font-size: 0.7rem;">S/ {{ rel.precioAnterior | number:'1.0-0' }}</span>
+                    }
+                  </div>
+                  <button class="btn btn-sm btn-outline-primary w-100 fw-bold" (click)="addToCart(rel)">
+                      + AGREGAR
                   </button>
                 </div>
               </div>

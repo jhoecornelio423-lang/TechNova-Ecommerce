@@ -31,6 +31,12 @@ public class User {
     @Column(name = "nombre_completo", length = 100)
     private String fullName;
 
+    @Column(length = 20)
+    private String dni;
+
+    @Column(columnDefinition = "TEXT")
+    private String direccion;
+
     @Column(name = "fecha_creacion")
     private LocalDateTime createdAt = LocalDateTime.now();
 

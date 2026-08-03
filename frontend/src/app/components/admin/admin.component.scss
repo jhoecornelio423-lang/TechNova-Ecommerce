@@ -6,6 +6,46 @@
   vertical-align: middle;
 }
 
+.table-danger-subtle {
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.form-select, .form-control {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+
+  &:focus {
+    border-color: var(--primary-slate);
+    box-shadow: 0 0 0 3px rgba(0, 63, 92, 0.1);
+  }
+}
+
+.input-group-text {
+  border-radius: 10px 0 0 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-switch {
+  .form-check-input {
+    cursor: pointer;
+    width: 40px;
+    height: 20px;
+    &:checked {
+      background-color: #ef4444;
+      border-color: #ef4444;
+    }
+  }
+}
+
+.btn-group {
+  .btn {
+    padding: 5px 12px;
+    border-radius: 8px !important;
+    margin: 0 2px;
+  }
+}
+
 .img-thumbnail {
   border-radius: 8px;
 }

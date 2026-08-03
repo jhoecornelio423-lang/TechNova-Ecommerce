@@ -36,6 +36,21 @@ public class Order {
     @Column(name = "direccion_envio")
     private String shippingAddress;
 
+    @Column(length = 20)
+    private String dni;
+
+    @Column(name = "nombre_cliente", length = 100)
+    private String customerName;
+
+    @Column(name = "email_cliente", length = 100)
+    private String customerEmail;
+
+    @Column(name = "costo_envio")
+    private BigDecimal shippingCost;
+
+    @Column(name = "tipo_entrega", length = 20)
+    private String deliveryMethod = "DELIVERY";
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items = new ArrayList<>();
+    private List<OrderItem> items; // Cambiado para evitar conflictos de inicialización con Jackson
 }

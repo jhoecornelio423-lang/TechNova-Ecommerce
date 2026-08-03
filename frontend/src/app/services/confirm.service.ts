@@ -6,6 +6,7 @@ export interface ConfirmData {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  confirmType?: 'danger' | 'primary' | 'warning' | 'success';
 }
 
 @Injectable({

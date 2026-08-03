@@ -26,4 +26,8 @@ export class OrderService {
     // Usando concatenación clásica para evitar confusiones con template literals en el IDE
     return this.http.put(this.API_URL + '/' + id + '/status', status);
   }
+
+  validateCoupon(code: string): Observable<any> {
+    return this.http.get(`/api/coupons/validate/${code}`);
+  }
 }

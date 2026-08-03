@@ -9,6 +9,8 @@ export interface User {
   username: string;
   email: string;
   fullName: string;
+  dni?: string;
+  direccion?: string;
   roles: any[];
 }
 

@@ -27,6 +27,9 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal precio;
 
+    @Column(name = "precio_anterior")
+    private BigDecimal precioAnterior;
+
     @Column(nullable = false)
     private Integer stock;
 

@@ -28,7 +28,9 @@ export class ProfileComponent implements OnInit {
   ) {
     this.profileForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      dni: ['', [Validators.pattern('^[0-9]{8}$')]], // Opcional en perfil, validado si se pone
+      direccion: ['', [Validators.minLength(10)]]
     });
   }
 
@@ -43,7 +45,9 @@ export class ProfileComponent implements OnInit {
         this.user.set(userData);
         this.profileForm.patchValue({
           fullName: userData.fullName,
-          email: userData.email
+          email: userData.email,
+          dni: userData.dni || '',
+          direccion: userData.direccion || ''
         });
         this.loading.set(false);
       },
@@ -63,23 +67,25 @@ export class ProfileComponent implements OnInit {
       next: (updatedUser) => {
         this.toastService.show('Perfil actualizado correctamente', 'success');
 
-        // Actualizar datos en el Storage para que la Navbar se refresque
+        // Actualizar datos en el Storage (incluyendo los nuevos campos)
         const currentUser = this.storageService.getUser();
         const newUserSession = {
           ...currentUser,
           fullName: updatedUser.fullName,
-          email: updatedUser.email
+          email: updatedUser.email,
+          dni: updatedUser.dni,
+          direccion: updatedUser.direccion
         };
         this.storageService.saveUser(newUserSession);
 
-        // Avisar al AuthService para que emita el nuevo estado
         this.authService.refreshUserState();
-
         this.saving.set(false);
       },
       error: (err) => {
         console.error('Error actualizando perfil:', err);
-        this.toastService.show('Error al actualizar el perfil', 'danger');
+        // Extraer mensaje de error del servidor si existe
+        const msg = err.error?.message || 'Error al intentar actualizar el perfil';
+        this.toastService.show(msg, 'danger');
         this.saving.set(false);
       }
     });

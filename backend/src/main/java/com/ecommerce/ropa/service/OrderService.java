@@ -24,27 +24,46 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
-        BigDecimal total = BigDecimal.ZERO;
+        System.out.println("DEBUG: Iniciando creacion de orden para: " + order.getCustomerName());
+        System.out.println("DEBUG: Costo de envio recibido: " + order.getShippingCost());
+        
+        BigDecimal itemsTotal = BigDecimal.ZERO;
+
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            throw new RuntimeException("El pedido no contiene productos.");
+        }
 
         for (OrderItem item : order.getItems()) {
             Product product = productRepository.findById(item.getProduct().getId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + item.getProduct().getId()));
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado ID: " + item.getProduct().getId()));
 
             if (product.getStock() < item.getCantidad()) {
                 throw new RuntimeException("Stock insuficiente para: " + product.getNombre());
             }
 
+            // Actualizar stock
             product.setStock(product.getStock() - item.getCantidad());
             productRepository.save(product);
 
+            // Fijar datos del item
             item.setUnitPrice(product.getPrecio());
             item.setOrder(order);
 
-            BigDecimal itemSubtotal = product.getPrecio().multiply(new BigDecimal(item.getCantidad()));
-            total = total.add(itemSubtotal);
+            BigDecimal subtotal = product.getPrecio().multiply(new BigDecimal(item.getCantidad()));
+            itemsTotal = itemsTotal.add(subtotal);
+            
+            System.out.println("   [+] Item: " + product.getNombre() + " x" + item.getCantidad() + " = S/ " + subtotal);
         }
 
-        order.setTotal(total);
+        // Calcular Total Final
+        BigDecimal finalTotal = itemsTotal;
+        if (order.getShippingCost() != null) {
+            finalTotal = finalTotal.add(order.getShippingCost());
+        }
+
+        order.setTotal(finalTotal);
+        System.out.println("DEBUG: Total calculado final: S/ " + finalTotal);
+
         return orderRepository.save(order);
     }
 

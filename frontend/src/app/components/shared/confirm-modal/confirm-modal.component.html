@@ -1,5 +1,6 @@
 <div class="confirm-backdrop" *ngIf="confirmService.isOpen()">
-  <div class="confirm-modal shadow-lg animate-modal">
+  <div class="confirm-modal shadow-lg animate-modal"
+       [ngClass]="'modal-' + (confirmService.data().confirmType || 'danger')">
     <div class="confirm-header border-bottom p-3">
       <h5 class="mb-0 fw-bold text-dark">
         <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
@@ -7,13 +8,15 @@
       </h5>
     </div>
     <div class="confirm-body p-4">
-      <p class="mb-0 text-muted">{{ confirmService.data().message }}</p>
+      <div class="mb-0 text-muted" [innerHTML]="confirmService.data().message"></div>
     </div>
     <div class="confirm-footer border-top p-3 d-flex justify-content-end gap-2">
       <button class="btn btn-light" (click)="confirmService.onCancel()">
         {{ confirmService.data().cancelText || 'Cancelar' }}
       </button>
-      <button class="btn btn-danger" (click)="confirmService.onConfirm()">
+      <button class="btn"
+              [ngClass]="'btn-' + (confirmService.data().confirmType || 'danger')"
+              (click)="confirmService.onConfirm()">
         {{ confirmService.data().confirmText || 'Confirmar' }}
       </button>
     </div>

@@ -3,7 +3,7 @@ import uuid
 import os
 import time
 
-UPLOADS_DIR = r"C:\Users\JuanPerezma\Desktop\Proyecto ecommerce\backend\uploads"
+mrUPLOADS_DIR = r"C:\Users\JuanPerezma\Desktop\Proyecto ecommerce\backend\uploads"
 SQL_FILE = r"C:\Users\JuanPerezma\Desktop\Proyecto ecommerce\database\master_products.sql"
 
 if not os.path.exists(UPLOADS_DIR): os.makedirs(UPLOADS_DIR)
@@ -48,7 +48,7 @@ def run():
                         try:
                             name = item['productName']
                             offer = item['items'][0]['sellers'][0]['commertialOffer']
-                            price = offer['Price']
+                            price = round(offer['Price']) # Redondeo a entero
                             img = item['items'][0]['images'][0]['imageUrl']
                             desc = item.get('description', f"Prenda TechNova: {name}").replace('<p>', '').replace('</p>', '')[:200]
 

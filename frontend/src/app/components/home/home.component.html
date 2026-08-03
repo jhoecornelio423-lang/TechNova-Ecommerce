@@ -100,30 +100,72 @@
         <div class="row row-cols-1 row-cols-md-3 g-4">
           @for (product of pagedProducts; track product.id) {
             <div class="col">
-              <div class="card h-100 product-card border-0 shadow-sm">
-                <a [routerLink]="['/product', product.id]" class="text-decoration-none">
-                  <img
-                    [src]="product.imagenUrl || 'https://via.placeholder.com/300x400?text=TechNova+Ropa'"
-                    class="card-img-top"
-                    [alt]="product.nombre"
-                  >
-                </a>
-                <div class="card-body">
-                  <a [routerLink]="['/product', product.id]" class="text-decoration-none">
-                    <h5 class="card-title text-dark">{{ product.nombre }}</h5>
-                  </a>
-                  <p class="card-text text-muted small">{{ product.categoria?.nombre }} • Talla: {{ product.talla }}</p>
-                  <p class="card-text text-primary fw-bold fs-4">S/ {{ product.precio | number:'1.0-0' }}</p>
+              <div class="retail-item bg-white shadow-sm rounded-4 position-relative h-100 d-flex flex-column">
+
+                <!-- Imagen y Badges Superpuestos -->
+                <div class="retail-img-container overflow-hidden rounded-top-4 position-relative border-bottom border-light">
+                    <a [routerLink]="['/product', product.id]">
+                        <img [src]="product.imagenUrl" class="img-fluid w-100 retail-img" [alt]="product.nombre">
+                    </a>
+
+                    <!-- Badge de Descuento Superpuesto (Esquina) -->
+                    @if (product.precioAnterior && product.precioAnterior > product.precio) {
+                        <div class="retail-discount-tag">-{{ ((product.precioAnterior - product.precio) / product.precioAnterior * 100) | number:'1.0-0' }}%</div>
+                    }
+
+                    <!-- Estado de Stock Crítico (Franja Inferior) -->
+                    <div class="position-absolute bottom-0 start-0 w-100 p-0" style="z-index: 5;">
+                        @if (product.stock > 0 && product.stock <= 5) {
+                            <div class="bg-warning text-dark text-center smallest fw-bold py-1 shadow-sm opacity-95">¡ÚLTIMAS UNIDADES!</div>
+                        }
+                        @if (product.stock === 0) {
+                            <div class="bg-secondary text-white text-center smallest fw-bold py-1 shadow-sm opacity-95">AGOTADO</div>
+                        }
+                    </div>
                 </div>
-                <div class="card-footer bg-transparent border-0 pb-3">
-                   <div class="d-grid gap-2">
-                     <button class="btn btn-outline-primary btn-sm" (click)="addToCart(product)">
-                       <i class="bi bi-cart-plus me-1"></i> Añadir al Carrito
-                     </button>
-                     <button class="btn btn-warning btn-sm fw-bold" (click)="buyNow(product)">
-                       COMPRAR AHORA
-                     </button>
-                   </div>
+
+                <!-- Info de Producto (Encapsulada con padding) -->
+                <div class="retail-info p-3 flex-grow-1 d-flex flex-column">
+                  <!-- Logos de Beneficios (Icono Fijo) -->
+                  <div class="d-flex gap-1 mb-2 align-items-center" style="height: 16px;">
+                      @if (product.id % 3 === 0) {
+                        <span class="badge-mini bg-success text-white">ENVÍO GRATIS</span>
+                      } @else {
+                        <span class="text-muted smallest opacity-50">TechNova Prime</span>
+                      }
+                  </div>
+                  <a [routerLink]="['/product', product.id]" class="text-decoration-none">
+                    <h6 class="retail-title text-dark mb-3">{{ product.nombre }}</h6>
+                  </a>
+
+                  <!-- Bloque de Precios (Nivelado y con Color Dinámico) -->
+                  <div class="retail-price-block mt-auto" style="min-height: 55px;">
+                      <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="price-current fw-bold fs-3"
+                              [class.text-danger]="product.precioAnterior && product.precioAnterior > product.precio"
+                              [class.text-dark]="!product.precioAnterior || product.precioAnterior <= product.precio">
+                          S/ {{ product.precio | number:'1.0-0' }}
+                        </span>
+                        @if (product.precioAnterior && product.precioAnterior > product.precio) {
+                            <span class="badge bg-danger rounded-1 small fw-bold">-{{ ((product.precioAnterior - product.precio) / product.precioAnterior * 100) | number:'1.0-0' }}%</span>
+                        }
+                      </div>
+
+                      @if (product.precioAnterior && product.precioAnterior > product.precio) {
+                        <div class="price-old text-muted text-decoration-line-through smallest mb-1">Antes: S/ {{ product.precioAnterior | number:'1.0-0' }}</div>
+                      }
+                  </div>
+
+                  <!-- Footer del Item -->
+                  <div class="d-flex justify-content-between align-items-center pt-2 border-top border-light">
+                      <span class="text-muted smallest opacity-75 fw-bold" *ngIf="product.id % 15 === 0">PATROCINADO</span>
+                      <span class="text-primary smallest fw-bold" *ngIf="product.id % 20 === 0"><i class="bi bi-star-fill me-1"></i> DESTACADO</span>
+                      <span class="text-muted smallest" *ngIf="product.id % 15 !== 0 && product.id % 20 !== 0">TechNova</span>
+
+                      <button class="btn-add-retail" (click)="addToCart(product)" [disabled]="product.stock === 0">
+                        + AGREGAR
+                      </button>
+                  </div>
                 </div>
               </div>
             </div>

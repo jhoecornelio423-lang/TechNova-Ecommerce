@@ -1,62 +1,108 @@
 <!-- Eliminado admin-page para usar el contenedor unificado -->
 <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
   <h2 class="h4 mb-0 text-dark">Inventario de Productos</h2>
-  <button class="btn btn-warning fw-bold" routerLink="/admin/inventory/new">
+  <button class="btn btn-warning fw-bold text-white shadow-sm" routerLink="/admin/inventory/new">
     <i class="bi bi-plus-lg me-1"></i> Nueva Prenda
   </button>
 </div>
 
-<div class="card shadow-sm border-0">
+<!-- BARRA DE GESTIÓN INTELIGENTE (Filtros y Búsqueda) -->
+<div class="row g-3 mb-4 align-items-center bg-white p-3 rounded shadow-sm mx-0 border-start border-primary border-4">
+  <div class="col-md-4">
+    <div class="input-group shadow-sm">
+      <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+      <input
+        type="text"
+        class="form-control border-start-0 ps-0"
+        placeholder="Buscar prenda por nombre..."
+        [(ngModel)]="filterService.searchQuery">
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <select class="form-select shadow-sm" [(ngModel)]="filterService.selectedCategoryId">
+      <option [ngValue]="null">Todas las Categorías</option>
+      @for (cat of categories; track cat.id) {
+        <option [ngValue]="cat.id">{{ cat.nombre }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="col-md-5 d-flex justify-content-md-end align-items-center gap-3">
+    <div class="form-check form-switch bg-light p-2 px-3 rounded-pill border shadow-sm">
+      <input
+        class="form-check-input ms-0 me-2"
+        type="checkbox"
+        id="stockSwitch"
+        [(ngModel)]="filterService.showLowStockOnly">
+      <label class="form-check-label fw-bold text-dark small" for="stockSwitch">
+        <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> Stock Bajo
+      </label>
+    </div>
+
+    <div class="text-muted small fw-bold">
+      {{ filteredProducts.length }} prendas encontradas
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
   <div class="card-body p-0">
     <div class="table-responsive">
-      <table class="table table-hover mb-0">
+      <table class="table table-hover mb-0 align-middle">
         <thead class="table-dark">
           <tr>
-            <th>Imagen</th>
+            <th class="ps-4">Imagen</th>
             <th>Nombre</th>
             <th>Categoría</th>
             <th>Talla</th>
             <th>Precio</th>
             <th>Stock</th>
-            <th>Acciones</th>
+            <th class="text-end pe-4">Acciones</th>
           </tr>
         </thead>
         <tbody>
           @if (loading) {
             <tr>
-              <td colspan="7" class="text-center py-4">
+              <td colspan="7" class="text-center py-5">
                 <div class="spinner-border text-primary" role="status"></div>
                 <p class="mt-2 text-muted">Consultando almacén...</p>
               </td>
             </tr>
           } @else {
-            @for (product of products; track product.id) {
-              <tr>
-                <td>
-                  <img [src]="product.imagenUrl || 'https://via.placeholder.com/50'" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+            @for (product of filteredProducts; track product.id) {
+              <tr [class.table-danger-subtle]="(product.stock || 0) < 10 && filterService.showLowStockOnly">
+                <td class="ps-4">
+                  <img [src]="product.imagenUrl || 'https://via.placeholder.com/50'" class="rounded shadow-sm" style="width: 45px; height: 45px; object-fit: cover;">
                 </td>
-                <td>{{ product.nombre }}</td>
-                <td>{{ product.categoria?.nombre || 'Sin categoría' }}</td>
-                <td>{{ product.talla }}</td>
-                <td>S/ {{ product.precio | number:'1.0-2' }}</td>
+                <td class="fw-bold">{{ product.nombre }}</td>
+                <td><span class="badge bg-light text-dark border">{{ product.categoria?.nombre || 'Sin categoría' }}</span></td>
+                <td><span class="fw-bold">{{ product.talla }}</span></td>
+                <td class="text-primary fw-bold">S/ {{ product.precio | number:'1.0-2' }}</td>
                 <td>
-                  <span class="badge" [ngClass]="(product.stock || 0) < 10 ? 'bg-danger' : 'bg-success'">
-                    {{ product.stock }}
+                  <span class="badge rounded-pill px-3 py-2" [ngClass]="(product.stock || 0) < 10 ? 'bg-danger' : 'bg-success'">
+                    {{ product.stock }} {{ (product.stock || 0) < 10 ? '!' : '✓' }}
                   </span>
                 </td>
-                <td>
-                  <button class="btn btn-sm btn-primary me-2" [routerLink]="['/admin/inventory/edit', product.id]" title="Editar">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn btn-sm btn-danger" (click)="deleteProduct(product.id)" title="Eliminar">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                <td class="text-end pe-4">
+                  <div class="btn-group shadow-sm rounded-3 overflow-hidden">
+                    <button class="btn btn-sm btn-outline-primary" [routerLink]="['/admin/inventory/edit', product.id]" title="Editar">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)='deleteProduct(product.id)' title="Eliminar">
+                      <i class="bi bi-trash3-fill"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="7" class="text-center py-4 text-muted">
-                  No se encontraron productos en la base de datos.
+                <td colspan="7" class="text-center py-5">
+                  <i class="bi bi-search display-4 text-muted opacity-25"></i>
+                  <p class="mt-3 text-muted">No se encontraron productos con esos filtros.</p>
+                  <button class="btn btn-link text-primary" (click)="clearFilters()">
+                    Limpiar Filtros
+                  </button>
                 </td>
               </tr>
             }

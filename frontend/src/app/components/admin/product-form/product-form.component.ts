@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../services/product.service';
 import { Category } from '../../../models/product.model';
 import { ToastService } from '../../../services/toast.service';
+import { forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -43,40 +44,45 @@ export class ProductFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCategories();
-
     this.productId = this.route.snapshot.params['id'];
-    if (this.productId) {
-      this.isEditMode = true;
-      this.loadProductData(this.productId);
-    }
+    this.isEditMode = !!this.productId;
+    this.loadInitialData();
   }
 
-  loadCategories(): void {
-    this.productService.getCategories().subscribe({
-      next: (data) => this.categories = data,
-      error: (err) => console.error('Error al cargar categorías', err)
-    });
-  }
-
-  loadProductData(id: number): void {
+  loadInitialData(): void {
     this.loading = true;
-    this.productService.getProductById(id).subscribe({
-      next: (product) => {
-        this.productForm.patchValue({
-          nombre: product.nombre,
-          descripcion: product.descripcion,
-          precio: product.precio,
-          stock: product.stock,
-          categoria: { id: product.categoria.id },
-          talla: product.talla,
-          color: product.color
-        });
-        this.imagePreview = product.imagenUrl;
+
+    // Cargamos categorías y, si estamos editando, también el producto simultáneamente
+    const categories$ = this.productService.getCategories();
+    const product$ = this.isEditMode && this.productId
+      ? this.productService.getProductById(this.productId)
+      : of(null);
+
+    forkJoin({
+      categories: categories$,
+      product: product$
+    }).subscribe({
+      next: (result) => {
+        this.categories = result.categories;
+
+        if (result.product) {
+          this.productForm.patchValue({
+            nombre: result.product.nombre,
+            descripcion: result.product.descripcion,
+            precio: result.product.precio,
+            stock: result.product.stock,
+            categoria: { id: result.product.categoria.id },
+            talla: result.product.talla,
+            color: result.product.color
+          });
+          this.imagePreview = result.product.imagenUrl;
+        }
+
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error al cargar producto', err);
+        console.error('Error cargando datos iniciales:', err);
+        this.toastService.show('Error al cargar la información del formulario', 'danger');
         this.loading = false;
       }
     });
@@ -96,6 +102,7 @@ export class ProductFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.productForm.invalid || (!this.isEditMode && !this.selectedFile)) {
+      this.productForm.markAllAsTouched();
       return;
     }
 

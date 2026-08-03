@@ -1,60 +1,198 @@
-<div class="checkout-container py-5">
-  <div class="row">
-    <!-- Formulario de Envío -->
+<div class="container py-5">
+  <app-terms *ngIf="showTerms" (close)="showTerms = false"></app-terms>
+
+  <div class="row g-4">
+    <!-- Formulario de Checkout -->
     <div class="col-md-7">
-      <div class="card shadow-sm border-0 p-4">
-        <h4 class="fw-bold mb-4">Información de Envío</h4>
-        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label class="form-label fw-bold">Dirección de Entrega</label>
-            <textarea
-              class="form-control"
-              formControlName="direccionEnvio"
-              rows="3"
-              placeholder="Ej: Calle Las Flores 123, Miraflores, Lima">
-            </textarea>
-            @if (checkoutForm.get('direccionEnvio')?.touched && checkoutForm.get('direccionEnvio')?.invalid) {
-              <small class="text-danger">La dirección es obligatoria (mínimo 10 caracteres).</small>
-            }
+      <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card-header bg-dark text-white p-4 text-center">
+          <h4 class="mb-0 fw-bold"><i class="bi bi-bag-check-fill me-2 text-warning"></i>Finalizar Compra</h4>
+        </div>
+        <div class="card-body p-4 p-md-5">
+
+          <!-- SELECTOR DE MÉTODO DE ENTREGA -->
+          <div class="delivery-selector mb-5">
+            <h5 class="fw-bold text-dark mb-3">¿Cómo prefieres recibir tu pedido?</h5>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="method-card p-3 border rounded-4 text-center cursor-pointer transition-all"
+                     [class.active]="deliveryMethod() === 'DELIVERY'"
+                     (click)="setDeliveryMethod('DELIVERY')">
+                  <i class="bi bi-truck fs-1 mb-2 d-block"></i>
+                  <div class="fw-bold small">ENVÍO A CASA</div>
+                  <div class="text-muted smallest">Calculado por distancia</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="method-card p-3 border rounded-4 text-center cursor-pointer transition-all"
+                     [class.active]="deliveryMethod() === 'RECOJO'"
+                     (click)="setDeliveryMethod('RECOJO')">
+                  <i class="bi bi-shop fs-1 mb-2 d-block"></i>
+                  <div class="fw-bold small">RECOJO EN TIENDA</div>
+                  <div class="text-success smallest fw-bold">¡GRATIS!</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="alert alert-info border-0 shadow-sm mt-4">
-            <i class="bi bi-info-circle me-2"></i>
-            Por ahora solo aceptamos Pago Contra Entrega. Pagas cuando recibes tu pedido.
-          </div>
+          <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
 
-          <button class="btn btn-primary w-100 py-3 fw-bold mt-4" [disabled]="checkoutForm.invalid || loading">
-            @if (loading) {
-              <span class="spinner-border spinner-border-sm me-1"></span>
-            }
-            CONFIRMAR PEDIDO
-          </button>
-        </form>
+            <h5 class="fw-bold text-dark border-bottom pb-2 mb-4">Datos del Comprador</h5>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-12">
+                <label class="form-label fw-bold small text-uppercase">Nombre Completo</label>
+                <input type="text" class="form-control form-control-lg bg-light" formControlName="nombreCliente">
+              </div>
+
+              <div class="col-md-8">
+                <label class="form-label fw-bold small text-uppercase">Correo Electrónico</label>
+                <input type="email" class="form-control form-control-lg bg-light" formControlName="emailCliente">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-uppercase">DNI</label>
+                <input type="text" class="form-control form-control-lg bg-light" formControlName="dni" maxlength="8">
+              </div>
+            </div>
+
+            <h5 class="fw-bold text-dark border-bottom pb-2 mb-4">
+              {{ deliveryMethod() === 'DELIVERY' ? 'Ubicación de Entrega' : 'Lugar de Recojo' }}
+            </h5>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold small text-uppercase">Dirección</label>
+              <textarea
+                class="form-control form-control-lg bg-light"
+                formControlName="direccionEnvio"
+                rows="2"
+                [readonly]="deliveryMethod() === 'RECOJO'"
+                placeholder="Selecciona en el mapa o escribe aquí..."
+                (input)="onAddressInput($event)">
+              </textarea>
+            </div>
+
+            <!-- LEAFLET MAP -->
+            <div class="map-container mb-4 shadow-sm border rounded-4 overflow-hidden position-relative">
+              <div id="map-container" style="height: 300px; width: 100%;"></div>
+
+              <div class="distance-badge shadow-sm" *ngIf="deliveryMethod() === 'DELIVERY' && distance() > 0">
+                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                Estás a <strong>{{ distance() }} km</strong> de la tienda
+              </div>
+
+              <div class="store-badge shadow-sm bg-success text-white" *ngIf="deliveryMethod() === 'RECOJO'">
+                <i class="bi bi-shop me-1"></i> Estamos aquí: Plaza de Armas
+              </div>
+            </div>
+
+            <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mb-4 rounded-4 bg-opacity-10" style="border-left: 5px solid #0dcaf0 !important;">
+              <i class="bi bi-cash-stack fs-3 me-3 text-info"></i>
+              <div>
+                  <div class="fw-bold text-dark">Pago Contra Entrega / Al Recoger</div>
+                  <div class="small text-muted">Cancela en casa o en tienda al recibir tus prendas.</div>
+              </div>
+            </div>
+
+            <div class="form-check mb-4 bg-light p-3 rounded-3">
+              <input class="form-check-input ms-0 me-2" type="checkbox" formControlName="aceptaTerminos" id="checkTerms">
+              <label class="form-check-label small text-muted" for="checkTerms">
+                He leído y acepto los <a href="javascript:void(0)" (click)="toggleTerms()" class="fw-bold text-primary text-decoration-none">Términos y Condiciones</a>.
+              </label>
+            </div>
+
+            <button class="btn btn-primary w-100 py-3 fw-bold shadow-lg" [disabled]="loading || checkoutForm.invalid">
+              @if (loading) {
+                <span class="spinner-border spinner-border-sm me-2"></span> PROCESANDO...
+              } @else {
+                {{ deliveryMethod() === 'DELIVERY' ? 'CONFIRMAR MI PEDIDO' : 'RESERVAR PARA RECOJO' }} <i class="bi bi-arrow-right ms-2"></i>
+              }
+            </button>
+          </form>
+        </div>
       </div>
     </div>
 
-    <!-- Resumen del Pedido -->
+    <!-- Resumen del Carrito Dinámico -->
     <div class="col-md-5">
-      <div class="card shadow-sm border-0 p-4 bg-light">
-        <h5 class="fw-bold mb-4">Resumen de tu compra</h5>
+      <div class="card shadow-sm border-0 rounded-4 bg-light p-4 sticky-top" style="top: 100px; z-index: 1;">
+        <h5 class="fw-bold mb-4">Resumen del Pedido</h5>
 
-        <div class="order-items mb-4">
+        <div class="order-items mb-4" style="max-height: 400px; overflow-y: auto;">
           @for (item of cartService.items(); track item.product.id) {
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <span class="fw-bold">{{ item.quantity }}x</span> {{ item.product.nombre }}
-                <div class="small text-muted">Talla: {{ item.product.talla }}</div>
+            <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-white rounded-4 shadow-sm border-start border-primary border-4">
+              <div class="d-flex align-items-center">
+                  <img [src]="item.product.imagenUrl" class="rounded-3 me-3 shadow-sm" style="width: 50px; height: 70px; object-fit: cover;">
+                  <div>
+                    <div class="fw-bold text-dark small">{{ item.product.nombre }}</div>
+                    <div class="text-muted small">
+                        {{ item.quantity }}x • Talla {{ item.product.talla }}
+                        @if (item.product.precioAnterior && item.product.precioAnterior > item.product.precio) {
+                            <span class="text-decoration-line-through ms-1 opacity-50">S/ {{ item.product.precioAnterior }}</span>
+                        }
+                    </div>
+                  </div>
               </div>
-              <span class="fw-bold text-dark">S/ {{ (item.product.precio * item.quantity) | number:'1.0-2' }}</span>
+              <span class="fw-bold"
+                    [class.text-danger]="item.product.precioAnterior && item.product.precioAnterior > item.product.precio"
+                    [class.text-dark]="!item.product.precioAnterior || item.product.precioAnterior <= item.product.precio">
+                S/ {{ (item.product.precio * item.quantity) | number:'1.0-0' }}
+              </span>
             </div>
           }
         </div>
 
-        <hr>
+        <div class="bg-white p-4 rounded-4 mb-4 shadow-sm border">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Subtotal Ropa:</span>
+                <span class="fw-bold">S/ {{ cartService.totalPrice() | number:'1.0-0' }}</span>
+            </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
-          <span class="h5 mb-0">Total a pagar:</span>
-          <span class="h3 mb-0 text-primary fw-bold">S/ {{ cartService.totalPrice() | number:'1.0-2' }}</span>
+            @if (deliveryMethod() === 'DELIVERY') {
+                <div class="d-flex justify-content-between align-items-center mb-3 text-info">
+                    <span>Envío ({{ distance() }} km):</span>
+                    <span class="fw-bold">+ S/ {{ shippingCost() | number:'1.0-0' }}</span>
+                </div>
+            } @else {
+                <div class="d-flex justify-content-between align-items-center mb-3 text-success fw-bold">
+                    <span>Retiro en Tienda:</span>
+                    <span>S/ 0 (¡Gratis!)</span>
+                </div>
+            }
+
+            @if (appliedCoupon()) {
+                <div class="d-flex justify-content-between align-items-center mb-3 text-success fw-bold">
+                    <span>Descuento Cupón ({{ appliedCoupon().descuentoPorcentaje }}%):</span>
+                    <span>- S/ {{ ((cartService.totalPrice() + shippingCost()) * appliedCoupon().descuentoPorcentaje / 100) | number:'1.0-0' }}</span>
+                </div>
+            }
+
+            <hr class="my-3 opacity-25">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="h5 mb-0 fw-bold text-dark">TOTAL FINAL:</span>
+                <span class="h2 mb-0 text-primary fw-bold">S/ {{ totalAfterCoupon | number:'1.0-0' }}</span>
+            </div>
+        </div>
+
+        <div class="p-3 bg-white rounded-3 border-start border-warning border-4 small text-muted shadow-sm mb-4">
+            <i class="bi bi-info-circle-fill me-2 text-warning"></i>
+            {{ deliveryMethod() === 'DELIVERY' ? 'El envío se calcula por km.' : 'Tus prendas estarán reservadas por 48 horas en tienda.' }}
+        </div>
+
+        <!-- SISTEMA DE CUPONES (Movido aquí debajo del resumen) -->
+        <div class="coupon-section p-3 bg-white border rounded-4 shadow-sm">
+          <label class="form-label fw-bold small text-uppercase mb-2">¿Tienes un cupón?</label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Escribe tu código" [(ngModel)]="couponCode" [ngModelOptions]="{standalone: true}">
+            <button class="btn btn-dark fw-bold px-4" type="button" (click)="applyCoupon()" [disabled]="validatingCoupon">
+              APLICAR
+            </button>
+          </div>
+          @if (appliedCoupon()) {
+            <div class="mt-2 text-success small fw-bold">
+              <i class="bi bi-check-circle-fill me-1"></i> Cupón "{{ appliedCoupon().codigo }}" aplicado (-{{ appliedCoupon().descuentoPorcentaje }}%)
+            </div>
+          }
         </div>
       </div>
     </div>
